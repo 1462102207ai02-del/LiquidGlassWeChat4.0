@@ -2,7 +2,7 @@ Package: com.1462102207ai02-del.liquidglasswechat
 Name: LiquidGlassWeChat
 Version: 4.0.2
 Architecture: iphoneos-arm
-Description: 液态玻璃微信底栏美化插件
+Description: Liquid glass style for WeChat bottom bar
 Depends: mobilesubstrate
 Section: Tweaks
 Author: 1462102207ai02-del
