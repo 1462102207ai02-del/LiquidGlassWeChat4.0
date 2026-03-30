@@ -1,23 +1,13 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
-typedef NS_ENUM(NSInteger, TabBarStyle) {
-    TabBarStyleSystemAutomatic = 0,
-    TabBarStyleLightGlass,
-    TabBarStyleDarkGlass,
-    TabBarStyleBlueGlass,
-    TabBarStylePurpleGlass,
-    TabBarStylePinkGlass,
-    TabBarStyleGradientGlass
-};
-
-static NSInteger currentStyle() {
-    return [[NSUserDefaults standardUserDefaults] integerForKey:@"LiquidGlassWeChat_Style"];
-}
-
 static CGFloat globalAlpha() {
     CGFloat alpha = [[NSUserDefaults standardUserDefaults] floatForKey:@"LiquidGlassWeChat_Alpha"];
     return (alpha < 0.1) ? 0.7 : alpha;
+}
+
+static NSInteger currentStyle() {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:@"LiquidGlassWeChat_Style"];
 }
 
 static BOOL hideTabBarTitles() {
@@ -67,13 +57,12 @@ static void applyGlowLayer(UIView *toView) {
     CALayer *glow = [CALayer layer];
     glow.name = @"LiquidGlassGlow";
     glow.frame = toView.bounds;
-    glow.backgroundColor = UIColor.clearColor.CGColor;
     glow.cornerRadius = toView.layer.cornerRadius;
     glow.borderColor = [UIColor colorWithWhite:1.0 alpha:0.3].CGColor;
     glow.borderWidth = 0.6;
     glow.shadowColor = [UIColor colorWithWhite:1.0 alpha:0.4].CGColor;
-    glow.shadowOpacity = 1;
-    glow.shadowRadius = 6;
+    glow.shadowOpacity = 1.0;
+    glow.shadowRadius = 6.0;
     glow.shadowOffset = CGSizeZero;
     glow.masksToBounds = NO;
     [toView.layer insertSublayer:glow above:0];
@@ -87,65 +76,55 @@ static void applyGlowLayer(UIView *toView) {
     self.backgroundImage = [UIImage new];
     self.shadowImage = [UIImage new];
     self.backgroundColor = UIColor.clearColor;
-    self.layer.cornerRadius = tabBarCornerRadius();
     self.clipsToBounds = YES;
+    self.layer.cornerRadius = tabBarCornerRadius();
 
-    for (UIView *sub in self.subviews) {
-        if ([sub isKindOfClass:[UIVisualEffectView class]]) {
-            [sub removeFromSuperview];
+    for (UIView *v in self.subviews) {
+        if ([v isKindOfClass:NSClassFromString(@"UIVisualEffectView")]) {
+            [v removeFromSuperview];
         }
     }
 
     UIBlurEffect *blurEffect;
     UIColor *overlayColor;
     CGFloat overlayAlpha = 0.12;
-    CGFloat alpha = globalAlpha();
     NSInteger style = currentStyle();
 
+    if (@available(iOS 12, *)) {
+        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterialDark];
+        } else {
+            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterialLight];
+        }
+    } else {
+        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    }
+
     switch (style) {
-        case TabBarStyleSystemAutomatic:
-            if (@available(iOS 12.0, *)) {
-                if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
-                    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterialDark];
-                    overlayColor = [UIColor whiteColor];
-                } else {
-                    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterialLight];
-                    overlayColor = [UIColor blackColor];
-                }
-            } else {
-                blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-                overlayColor = [UIColor blackColor];
-            }
-            break;
-        case TabBarStyleLightGlass:
+        case 1:
             blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
             overlayColor = [UIColor whiteColor];
             overlayAlpha = 0.25;
             break;
-        case TabBarStyleDarkGlass:
+        case 2:
             blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
             overlayColor = [UIColor blackColor];
             overlayAlpha = 0.2;
             break;
-        case TabBarStyleBlueGlass:
-            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        case 3:
             overlayColor = [UIColor colorWithRed:0.2 green:0.45 blue:1.0 alpha:1.0];
             break;
-        case TabBarStylePurpleGlass:
-            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        case 4:
             overlayColor = [UIColor colorWithRed:0.65 green:0.25 blue:1.0 alpha:1.0];
             break;
-        case TabBarStylePinkGlass:
-            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        case 5:
             overlayColor = [UIColor colorWithRed:1.0 green:0.35 blue:0.6 alpha:1.0];
             break;
-        case TabBarStyleGradientGlass:
-            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        case 6:
             overlayColor = UIColor.clearColor;
             overlayAlpha = 0;
             break;
         default:
-            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterialLight];
             overlayColor = [UIColor blackColor];
             break;
     }
@@ -154,17 +133,17 @@ static void applyGlowLayer(UIView *toView) {
     effectView.frame = self.bounds;
     effectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     effectView.userInteractionEnabled = NO;
-    effectView.alpha = alpha;
+    effectView.alpha = globalAlpha();
     effectView.layer.cornerRadius = self.layer.cornerRadius;
     effectView.clipsToBounds = YES;
 
-    UIView *colorView = [[UIView alloc] initWithFrame:effectView.bounds];
-    colorView.backgroundColor = overlayColor;
-    colorView.alpha = overlayAlpha;
-    colorView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [effectView.contentView addSubview:colorView];
+    UIView *colorOverlay = [[UIView alloc] initWithFrame:effectView.bounds];
+    colorOverlay.backgroundColor = overlayColor;
+    colorOverlay.alpha = overlayAlpha;
+    colorOverlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [effectView.contentView addSubview:colorOverlay];
 
-    if (style == TabBarStyleGradientGlass) {
+    if (style == 6) {
         applyGradientLayer(effectView);
     }
 
@@ -177,30 +156,32 @@ static void applyGlowLayer(UIView *toView) {
 
 %end
 
-%hook UIView
+%hook UITabBarButton
 
-- (void)setTransform:(CGAffineTransform)transform {
-    if ([self.superview isKindOfClass:NSClassFromString(@"UITabBar")]) {
-        CGFloat scale = tabBarIconScale();
-        %orig(CGAffineTransformMakeScale(scale, scale));
-        return;
-    }
+- (void)layoutSubviews {
     %orig;
+    CGFloat scale = tabBarIconScale();
+    if (scale != 1.0) {
+        self.transform = CGAffineTransformMakeScale(scale, scale);
+    }
 }
 
 %end
 
-%hook UITabBarItem
+%hook UILabel
 
-- (id)initWithTitle:(id)title image:(id)image selectedImage:(id)selectedImage {
-    if (hideTabBarTitles()) {
-        title = nil;
+- (void)setText:(NSString *)text {
+    UIView *superView = self.superview;
+    while (superView) {
+        if ([superView isKindOfClass:NSClassFromString(@"UITabBarButton")]) {
+            if (hideTabBarTitles()) {
+                %orig(nil);
+                return;
+            }
+            break;
+        }
+        superView = superView.superview;
     }
-    return %orig;
-}
-
-- (void)setTitle:(id)title {
-    if (hideTabBarTitles()) return;
     %orig;
 }
 
