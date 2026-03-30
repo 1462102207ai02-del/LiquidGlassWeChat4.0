@@ -11,7 +11,7 @@ typedef NS_ENUM(NSInteger, TabBarStyle) {
     TabBarStyleGradientGlass
 };
 
-static TabBarStyle currentStyle() {
+static NSInteger currentStyle() {
     return [[NSUserDefaults standardUserDefaults] integerForKey:@"LiquidGlassWeChat_Style"];
 }
 
@@ -54,7 +54,6 @@ static void applyGradientLayer(UIView *toView) {
     ];
     gl.startPoint = CGPointMake(0, 0);
     gl.endPoint = CGPointMake(1, 1);
-    gl.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
     [toView.layer insertSublayer:gl atIndex:0];
 }
 
@@ -77,7 +76,6 @@ static void applyGlowLayer(UIView *toView) {
     glow.shadowRadius = 6;
     glow.shadowOffset = CGSizeZero;
     glow.masksToBounds = NO;
-    glow.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
     [toView.layer insertSublayer:glow above:0];
 }
 
@@ -85,14 +83,10 @@ static void applyGlowLayer(UIView *toView) {
 
 - (void)layoutSubviews {
     %orig;
-    [self applyLiquidGlassEffect];
-}
 
-- (void)applyLiquidGlassEffect {
     self.backgroundImage = [UIImage new];
     self.shadowImage = [UIImage new];
     self.backgroundColor = UIColor.clearColor;
-
     self.layer.cornerRadius = tabBarCornerRadius();
     self.clipsToBounds = YES;
 
@@ -106,8 +100,7 @@ static void applyGlowLayer(UIView *toView) {
     UIColor *overlayColor;
     CGFloat overlayAlpha = 0.12;
     CGFloat alpha = globalAlpha();
-
-    TabBarStyle style = currentStyle();
+    NSInteger style = currentStyle();
 
     switch (style) {
         case TabBarStyleSystemAutomatic:
@@ -184,14 +177,15 @@ static void applyGlowLayer(UIView *toView) {
 
 %end
 
-%hook UITabBarButton
+%hook UIView
 
-- (void)layoutSubviews {
-    %orig;
-    CGFloat scale = tabBarIconScale();
-    if (scale != 1.0) {
-        self.transform = CGAffineTransformMakeScale(scale, scale);
+- (void)setTransform:(CGAffineTransform)transform {
+    if ([self.superview isKindOfClass:NSClassFromString(@"UITabBar")]) {
+        CGFloat scale = tabBarIconScale();
+        %orig(CGAffineTransformMakeScale(scale, scale));
+        return;
     }
+    %orig;
 }
 
 %end
@@ -200,7 +194,7 @@ static void applyGlowLayer(UIView *toView) {
 
 - (id)initWithTitle:(id)title image:(id)image selectedImage:(id)selectedImage {
     if (hideTabBarTitles()) {
-        return [super initWithTitle:nil image:image selectedImage:selectedImage];
+        title = nil;
     }
     return %orig;
 }
