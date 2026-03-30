@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y build-essential clang git wget xz-utils
+
+    - name: Install Theos
+      run: |
+        git clone --recursive https://github.com/theos/theos.git $HOME/theos
+        
+        rm -rf $HOME/theos/toolchain
+        git clone https://github.com/theos/toolchain.git $HOME/theos/toolchain
+
+    - name: Build Package
+      run: |
+        export THEOS=$HOME/theos
+        export PATH=$THEOS/toolchain/linux/iphone/bin:$PATH
+        make clean package FINALPACKAGE=1
+
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: deb
+        path: packages/*.deb
