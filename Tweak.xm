@@ -110,7 +110,7 @@ static void applyGlowLayer(UIView *toView) {
     TabBarStyle style = currentStyle();
 
     switch (style) {
-        case TabBarStyleSystemAutomatic: {
+        case TabBarStyleSystemAutomatic:
             if (@available(iOS 12.0, *)) {
                 if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
                     blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterialDark];
@@ -124,45 +124,37 @@ static void applyGlowLayer(UIView *toView) {
                 overlayColor = [UIColor blackColor];
             }
             break;
-        }
-        case TabBarStyleLightGlass: {
+        case TabBarStyleLightGlass:
             blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
             overlayColor = [UIColor whiteColor];
             overlayAlpha = 0.25;
             break;
-        }
-        case TabBarStyleDarkGlass: {
+        case TabBarStyleDarkGlass:
             blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
             overlayColor = [UIColor blackColor];
             overlayAlpha = 0.2;
             break;
-        }
-        case TabBarStyleBlueGlass: {
+        case TabBarStyleBlueGlass:
             blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
             overlayColor = [UIColor colorWithRed:0.2 green:0.45 blue:1.0 alpha:1.0];
             break;
-        }
-        case TabBarStylePurpleGlass: {
+        case TabBarStylePurpleGlass:
             blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
             overlayColor = [UIColor colorWithRed:0.65 green:0.25 blue:1.0 alpha:1.0];
             break;
-        }
-        case TabBarStylePinkGlass: {
+        case TabBarStylePinkGlass:
             blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
             overlayColor = [UIColor colorWithRed:1.0 green:0.35 blue:0.6 alpha:1.0];
             break;
-        }
-        case TabBarStyleGradientGlass: {
+        case TabBarStyleGradientGlass:
             blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
             overlayColor = UIColor.clearColor;
             overlayAlpha = 0;
             break;
-        }
-        default: {
+        default:
             blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemChromeMaterialLight];
             overlayColor = [UIColor blackColor];
             break;
-        }
     }
 
     UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
