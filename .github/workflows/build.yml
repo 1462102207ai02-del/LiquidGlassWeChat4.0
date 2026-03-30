@@ -14,13 +14,18 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt-get update -y
-        sudo apt-get install -y build-essential clang git wget xz-utils perl
+        sudo apt-get install -y \
+          build-essential \
+          clang \
+          git \
+          wget \
+          xz-utils \
+          perl \
+          libplist-utils
 
     - name: Install Theos
       run: |
         git clone --recursive https://github.com/theos/theos.git $HOME/theos
-        
-        # ✅ 用官方方式安装 toolchain（关键修复）
         bash $HOME/theos/bin/install-theos
 
     - name: Build Package
@@ -29,7 +34,7 @@ jobs:
         export PATH=$THEOS/toolchain/linux/iphone/bin:$PATH
         make clean package FINALPACKAGE=1
 
-    - name: Upload
+    - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: deb
