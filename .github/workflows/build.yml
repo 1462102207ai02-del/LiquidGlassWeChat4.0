@@ -14,14 +14,14 @@ jobs:
     - name: Install Dependencies
       run: |
         sudo apt-get update -y
-        sudo apt-get install -y build-essential clang git wget xz-utils
+        sudo apt-get install -y build-essential clang git wget xz-utils perl
 
     - name: Install Theos
       run: |
         git clone --recursive https://github.com/theos/theos.git $HOME/theos
         
-        rm -rf $HOME/theos/toolchain
-        git clone https://github.com/theos/toolchain.git $HOME/theos/toolchain
+        # ✅ 用官方方式安装 toolchain（关键修复）
+        bash $HOME/theos/bin/install-theos
 
     - name: Build Package
       run: |
