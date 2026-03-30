@@ -200,7 +200,7 @@ static void applyGlowLayer(UIView *toView) {
 
 - (id)initWithTitle:(id)title image:(id)image selectedImage:(id)selectedImage {
     if (hideTabBarTitles()) {
-        return %init(nil, image, selectedImage);
+        return [super initWithTitle:nil image:image selectedImage:selectedImage];
     }
     return %orig;
 }
