@@ -1,5 +1,4 @@
 #import <UIKit/UIKit.h>
-#import <objc/runtime.h>
 
 static void findAndStyleTabBar(void);
 
@@ -36,7 +35,7 @@ static void styleTabBar(UITabBar *tabBar) {
 
     UIVisualEffectView *glass = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:blurStyle]];
     glass.frame = f;
-    glass.autoresizingMask = UIViewAutoresizingMaskFlexibleWidth | UIViewAutoresizingMaskFlexibleHeight;
+    glass.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     glass.layer.cornerRadius = 24;
     glass.layer.masksToBounds = YES;
     glass.userInteractionEnabled = NO;
