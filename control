@@ -1,9 +1,9 @@
-Package: com.davinci.liquidglasswechat
+Package: com.1462102207ai02-del.liquidglasswechat
 Name: LiquidGlassWeChat
-Depends: mobilesubstrate
-Version: 1.0
+Version: 4.0.2
 Architecture: iphoneos-arm
-Description: WeChat UI tweak
-Maintainer: Davinci
-Author: Davinci
+Description: 液态玻璃微信底栏美化插件
+Depends: mobilesubstrate
 Section: Tweaks
+Author: 1462102207ai02-del
+Homepage: https://github.com/1462102207ai02-del/LiquidGlassWeChat4.0
