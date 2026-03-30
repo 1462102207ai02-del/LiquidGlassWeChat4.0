@@ -7,7 +7,7 @@
     <dict>
         <key>Bundles</key>
         <array>
-            <string>com.tencent.xin</string>
+            <string>com.tencent.xin</string>   <!-- 微信包 ID -->
         </array>
     </dict>
 </dict>
