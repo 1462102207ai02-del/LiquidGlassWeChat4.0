@@ -1,9 +1,11 @@
-Package: com.1462102207ai02-del.liquidglasswechat
-Name: LiquidGlassWeChat
-Version: 4.0.2
-Architecture: iphoneos-arm
-Description: Liquid glass style for WeChat bottom bar
+Package: com.youname.liquidtabbar
+Name: LiquidTabBar
+Version: 1.0
+Architecture: arm64e
+Description: Telegram style floating tab bar for WeChat 8.0.68
 Depends: mobilesubstrate
+Maintainer: 马泽鑫
+Author: You
 Section: Tweaks
-Author: 1462102207ai02-del
-Homepage: https://github.com/1462102207ai02-del/LiquidGlassWeChat4.0
+Priority: optional
+Homepage: https://github.com/you
