@@ -156,20 +156,21 @@ static void applyGlowLayer(UIView *toView) {
 
 %end
 
-%hook UITabBarButton
-
+// 安全图标缩放（无报错）
+%hook UIView
 - (void)layoutSubviews {
     %orig;
-    CGFloat scale = tabBarIconScale();
-    if (scale != 1.0) {
-        self.transform = CGAffineTransformMakeScale(scale, scale);
+    if ([self.superview isKindOfClass:NSClassFromString(@"UITabBar")]) {
+        CGFloat scale = tabBarIconScale();
+        if (scale != 1.0) {
+            self.transform = CGAffineTransformMakeScale(scale, scale);
+        }
     }
 }
-
 %end
 
+// 安全隐藏文字（无报错）
 %hook UILabel
-
 - (void)setText:(NSString *)text {
     UIView *superView = self.superview;
     while (superView) {
@@ -184,5 +185,4 @@ static void applyGlowLayer(UIView *toView) {
     }
     %orig;
 }
-
 %end
