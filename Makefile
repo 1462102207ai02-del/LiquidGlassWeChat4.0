@@ -1,13 +1,13 @@
-ARCHS = arm64e
-TARGET = iphone:clang:16.5:14.0
-INSTALL_TARGET_PROCESSES = WeChat
+ARCHS = arm64 arm64e
+TARGET = iphone:clang:latest:15.0
 
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = LiquidTabBar
 
-$(TWEAK_NAME)_FILES = Tweak.xm
-$(TWEAK_NAME)_FRAMEWORKS = UIKit
-$(TWEAK_NAME)_CFLAGS = -fobjc-arc
+LiquidTabBar_FILES = Tweak.xm
+LiquidTabBar_CFLAGS = -fobjc-arc
+LiquidTabBar_FRAMEWORKS = UIKit QuartzCore
+LiquidTabBar_INSTALL_TARGET_PROCESSES = WeChat
 
 include $(THEOS_MAKE_PATH)/tweak.mk
