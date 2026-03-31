@@ -1,41 +1,43 @@
-name: Build
+name: build
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main, master ]
+  pull_request:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-13
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Install Dependencies
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y \
-          build-essential \
-          clang \
-          git \
-          wget \
-          xz-utils \
-          perl \
-          libplist-utils
+      - name: Install build dependencies
+        run: |
+          brew update
+          brew install ldid dpkg
 
-    - name: Install Theos
-      run: |
-        git clone --recursive https://github.com/theos/theos.git $HOME/theos
-        bash $HOME/theos/bin/install-theos
+      - name: Install Theos
+        run: |
+          git clone --depth=1 https://github.com/theos/theos.git $HOME/theos
+          git clone --depth=1 https://github.com/theos/sdks.git $HOME/theos/sdks
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
 
-    - name: Build Package
-      run: |
-        export THEOS=$HOME/theos
-        export PATH=$THEOS/toolchain/linux/iphone/bin:$PATH
-        make clean package FINALPACKAGE=1
+      - name: Build package
+        env:
+          THEOS: ${{ env.THEOS }}
+        run: |
+          make clean package FINALPACKAGE=1
+          mkdir -p artifacts
+          find .theos -name 'LiquidTabBar.dylib' -print -exec cp {} artifacts/ \;
+          find packages -name '*.deb' -print -exec cp {} artifacts/ \;
+          cp LiquidTabBar.plist artifacts/
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: deb
-        path: packages/*.deb
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: LiquidTabBar
+          path: artifacts/*
+          if-no-files-found: error
