@@ -1,11 +1,9 @@
-Package: com.youname.liquidtabbar
+Package: com.yourname.liquidtabbar
 Name: LiquidTabBar
-Version: 1.0
-Architecture: arm64e
-Description: Telegram style floating tab bar for WeChat 8.0.68
-Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: Liquid-Glass-like navigation bar and tab bar for WeChat on iOS 16.
 Maintainer: 马泽鑫
-Author: You
+Author: 马泽鑫
 Section: Tweaks
-Priority: optional
-Homepage: https://github.com/you
+Depends: mobilesubstrate
